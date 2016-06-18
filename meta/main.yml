@@ -17,11 +17,11 @@ galaxy_info:
     - mail
     - server
 dependencies:
-     - { src: 'repleo.nginx',
+     - { role: "repleo.nginx",
                create_nginx_conf: false,
                nginx_sites: []
        }
-     - { src: 'repleo.postgresql',
+     - { role: "repleo.postgresql",
             databases: [
               { name: "{{ rainloop_db_name }}",
                 users: [
