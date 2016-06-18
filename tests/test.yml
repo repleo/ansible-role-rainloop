@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  remote_user: root
+  roles:
+    - { role: ansible-role-rainloop,
+         rainloop_db_user: rainloop,
+         rainloop_db_password: P4SSword,
+         rainloop_db_host: localhost,
+         rainloop_db_name: rainloopdb,
+    }

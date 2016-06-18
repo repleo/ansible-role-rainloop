@@ -1,0 +1,17 @@
+---
+# defaults file for ansible-role-rainloop/
+
+# General config.
+rainloop_hostname: webmail
+
+# SSL Configuration.
+rainloop_ssl: no
+rainloop_redirect_http_to_https: yes
+rainloop_ssl_certificate: "/etc/nginx/ssl/rainloop.crt"
+rainloop_ssl_certificate_key: "/etc/nginx/ssl/rainloop.key"
+
+# Database config.
+rainloop_db_user: rainloop
+rainloop_db_password: rainloop
+rainloop_db_host: localhost
+rainloop_db_name: rainloopdb

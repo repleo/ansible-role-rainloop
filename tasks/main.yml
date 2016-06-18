@@ -1,0 +1,49 @@
+---
+# tasks file for ansible-role-rainloop/
+
+- name: Install base packages
+  action: apt pkg={{item}} state=present
+  with_items:
+  - curl
+  - php5-sqlite
+  - php5-pgsql
+  - php5-mysql
+  - php5-fpm
+  - php5-gd
+  - php5-cli
+  - php5-curl
+
+- name: create directory /srv/www 
+  file: path=/srv/www/{{rainloop_hostname}} state=directory
+
+- name: set upload_max_filesize to 100M in php.ing
+  replace: dest=/etc/php5/fpm/php.ini regexp='upload_max_filesize(\s+)(.+)' replace='upload_max_filesize = 100M'
+  notify:
+    - restart php5-fpm
+
+- name: set post_max_filesize to 100M in php.ing
+  replace: dest=/etc/php5/fpm/php.ini regexp='post_max_size(\s+)(.+)' replace='post_max_size = 100M'
+  notify:
+    - restart php5-fpm
+
+
+- name: check if rainloop is installed
+  action: shell test -f /srv/www/{{rainloop_hostname}}/index.php && echo "ok" || echo ""
+  register: rainloop_installed
+
+- name: install rainloop uit
+  command: chdir=/srv/www/{{rainloop_hostname}} bash -c "curl -s http://repository.rainloop.net/installer.php | php"
+  when: rainloop_installed.stdout != "ok"
+  notify:
+    - reload nginx
+
+- name: Create the nginx configuration for rainloop
+  template: src=nginx/rainloop.j2 dest=/etc/nginx/sites-available/{{rainloop_hostname}}
+  notify:
+   - reload nginx
+
+
+- name: Create the links to enable rainloop configuration
+  file: path=/etc/nginx/sites-enabled/{{rainloop_hostname}} state=link src=/etc/nginx/sites-available/{{rainloop_hostname}}
+  notify:
+   - reload nginx
