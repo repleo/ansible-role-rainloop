@@ -1,6 +1,6 @@
 {% if rainloop_ssl and rainloop_redirect_http_to_https %}
 server {
-  listen *:80;
+  listen 0.0.0.0:80;
   listen [::]:80;
   server_name {{rainloop_hostname}};
   return 301 https://$host$request_uri;
@@ -9,12 +9,12 @@ server {
 
 server {
 {% if rainloop_ssl %}
-    listen *:443 ssl;
+    listen 0.0.0.0:443 ssl;
     listen [::]:443 ssl;
     ssl_certificate {{ rainloop_ssl_certificate }};
     ssl_certificate_key {{ rainloop_ssl_certificate_key }};
 {% else %}
-    listen *:80;
+    listen 0.0.0.0:80;
     listen [::]:80;
 {% endif %}
     server_name {{rainloop_hostname}};
